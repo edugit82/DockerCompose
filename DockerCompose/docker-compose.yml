@@ -5,7 +5,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./html:/usr/share/nginx/html
+      - ./html:/usr/share/nginx/html  
   jenkins:
     image: jenkins/jenkins:lts # Use the official Jenkins LTS image
     privileged: true # Required for Docker-in-Docker functionality if building Docker images within Jenkins
@@ -19,3 +19,6 @@ services:
       - /usr/local/bin/docker:/usr/local/bin/docker # Mount Docker binary for Docker-in-Docker
     container_name: jenkins_master
     restart: unless-stopped # Ensure Jenkins restarts automatically
+
+volumes:
+  jenkins_home: # Define the named volume for Jenkins data
