@@ -13,7 +13,8 @@ services:
       - jenkins_home:/var/jenkins_home # Persistent storage for Jenkins data
       - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for Docker-in-Docker
       - /usr/local/bin/docker:/usr/local/bin/docker # Mount Docker binary for Docker-in-Docker
-      - /home/EduardoCorrea82AzureUser:/Root #Root
+      #- /home/EduardoCorrea82AzureUser:/Root #Root
+      - /home/ubuntu:/Root #Root
     container_name: jenkins_master
     restart: unless-stopped # Ensure Jenkins restarts automatically
   
