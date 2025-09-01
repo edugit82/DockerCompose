@@ -1,15 +1,9 @@
 ﻿# docker-compose.yml
-services:
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./html:/usr/share/nginx/html  
-    container_name: nginx_master
-    restart: unless-stopped # Ensure Jenkins restarts automatically
+services:  
+    
   jenkins:
     image: jenkins/jenkins:lts # Use the official Jenkins LTS image
+    command: sh -c "git init && git config --global --add safe.directory /Root/DockerCompose" 
     privileged: true # Required for Docker-in-Docker functionality if building Docker images within Jenkins
     user: root # Run as root user inside the container for full permissions
     ports:
@@ -21,6 +15,15 @@ services:
       - /usr/local/bin/docker:/usr/local/bin/docker # Mount Docker binary for Docker-in-Docker
       - /home/EduardoCorrea82AzureUser:/Root #Root
     container_name: jenkins_master
+    restart: unless-stopped # Ensure Jenkins restarts automatically
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html  
+    container_name: nginx_container
     restart: unless-stopped # Ensure Jenkins restarts automatically
 
 volumes:
