@@ -6,6 +6,8 @@ services:
       - "80:80"
     volumes:
       - ./html:/usr/share/nginx/html  
+    container_name: nginx_master
+    restart: unless-stopped # Ensure Jenkins restarts automatically
   jenkins:
     image: jenkins/jenkins:lts # Use the official Jenkins LTS image
     privileged: true # Required for Docker-in-Docker functionality if building Docker images within Jenkins
@@ -17,6 +19,7 @@ services:
       - jenkins_home:/var/jenkins_home # Persistent storage for Jenkins data
       - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for Docker-in-Docker
       - /usr/local/bin/docker:/usr/local/bin/docker # Mount Docker binary for Docker-in-Docker
+      - /home/EduardoCorrea82AzureUser:/Root #Root
     container_name: jenkins_master
     restart: unless-stopped # Ensure Jenkins restarts automatically
 
