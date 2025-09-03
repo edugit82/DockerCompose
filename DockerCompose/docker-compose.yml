@@ -1,8 +1,9 @@
 ﻿# docker-compose.yml
-services:  
+services:
     
   jenkins:
     image: jenkins/jenkins:lts # Use the official Jenkins LTS image    
+    container_name: jenkins_master
     privileged: true # Required for Docker-in-Docker functionality if building Docker images within Jenkins
     user: root # Run as root user inside the container for full permissions
     ports:
@@ -12,18 +13,42 @@ services:
       - jenkins_home:/var/jenkins_home # Persistent storage for Jenkins data
       - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket for Docker-in-Docker
       - /usr/local/bin/docker:/usr/local/bin/docker # Mount Docker binary for Docker-in-Docker
-      - ./html:/var/html
-    container_name: jenkins_master
+      - ./html:/var/html    
     restart: unless-stopped # Ensure Jenkins restarts automatically
-  
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped 
+       
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_container
+    hostname: rabbitmq
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persistent data volume
+    restart: unless-stopped    
+      
   nginx:
     image: nginx:latest
+    container_name: nginx_container
     ports:
       - "80:80"
     volumes:
-      - ./html:/usr/share/nginx/html  
-    container_name: nginx_container
-    restart: unless-stopped # Ensure Jenkins restarts automatically
+      - ./html:/usr/share/nginx/html      
+    restart: unless-stopped 
 
 volumes:
   jenkins_home: # Define the named volume for Jenkins data
+  redis_data:
+  rabbitmq_data:  
